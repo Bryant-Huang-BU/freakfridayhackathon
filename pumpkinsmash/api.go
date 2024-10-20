@@ -10,9 +10,9 @@ import (
 	"net/http"
 )
 
-func main() {
+func main() 
 	// Create a new HTTP server
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc"/", func(w http.ResponseWriter, r *http.Request) 
 		// Check if the request is a GET request
 		if r.Method != "GET" {
 			http.Error(w, "Invalid request method", http.StatusBadRequest)
@@ -31,6 +31,7 @@ func main() {
 		defer db.Close()
 
 		// Query the flags table with the user-provided flag_id
+        
 		// This is vulnerable to SQL injection attacks
 		query := fmt.Sprintf("SELECT * FROM flags WHERE id = '%s'", flagID)
 		rows, err := db.Query(query)
@@ -55,7 +56,6 @@ func main() {
 
 		// Return the results as JSON
 		json.NewEncoder(w).Encode(results)
-	})
+	
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
-}
