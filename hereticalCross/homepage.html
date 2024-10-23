@@ -1,42 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reflected XSS Vulnerable Page</title>
-    <style>
-        #messages {
-            list-style-type: none; /* Remove bullet points */
-            padding: 0; /* Remove padding */
+document.getElementById('message-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+
+    const message = document.getElementById('user-input').value; // Get the user input
+
+    // Create a new list item for the message
+    const li = document.createElement('li');
+
+    // Check if the input contains a script tag
+    if (message.includes('<script>')) {
+        const scriptContent = message.match(/<script>(.*?)<\/script>/);
+        if (scriptContent) {
+            const script = document.createElement('script');
+            script.textContent = scriptContent[1]; // Get the script content
+            document.body.appendChild(script); // Append script to body to execute it
         }
-    </style>
-</head>
-<body>
-    <h1>Welcome to the Reflected XSS Vulnerable Page</h1>
-    
-    <form id="message-form">
-        <input type="text" id="user-input" placeholder="Enter your message" required>
-        <button type="submit">Submit</button>
-    </form>
+    } else {
+        li.innerHTML = message; // Directly inserting user input into the page
+    }
 
-    <h2>Your Messages:</h2>
-    <ul id="messages"></ul> <!-- This is where the messages will be displayed -->
+    document.getElementById('messages').appendChild(li); // Append the list item to the messages list
 
-    <script>
-        // Function to handle form submission
-        document.getElementById('message-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-
-            const message = document.getElementById('user-input').value; // Get the user input
-
-            // Create a new list item for the message
-            const li = document.createElement('li');
-            li.innerHTML = message; // Directly inserting user input into the page (vulnerable to XSS)
-            document.getElementById('messages').appendChild(li); // Append the list item to the messages list
-
-            // Clear the input field
-            document.getElementById('user-input').value = '';
-        });
-    </script>
-</body>
-</html>
+    // Clear the input field
+    document.getElementById('user-input').value = '';
+});
