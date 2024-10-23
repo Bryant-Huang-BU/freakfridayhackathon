@@ -23,6 +23,20 @@
     <ul id="messages"></ul> <!-- This is where the messages will be displayed -->
 
     <script>
+        // Function to fetch the winning flag from the backend
+        async function fetchWinningFlag() {
+            try {
+                const response = await fetch('/api/winning-flag'); // Adjust the URL as needed
+                const data = await response.json();
+                document.title = data.flag; // Set the document title to the winning flag
+            } catch (error) {
+                console.error('Error fetching the winning flag:', error);
+            }
+        }
+
+        // Call the function to fetch the flag when the page loads
+        window.onload = fetchWinningFlag;
+
         // Function to handle form submission
         document.getElementById('message-form').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting normally
@@ -31,24 +45,7 @@
 
             // Create a new list item for the message
             const li = document.createElement('li');
-
-            // Regex to match <script>alert(<flag here>)</script>
-            const scriptRegex = /<script>alert\((.*?)\)<\/script>/;
-
-            // Check if the input matches the script pattern
-            const match = message.match(scriptRegex);
-            if (match) {
-                const flag = match[1]; // Extract the flag from the regex match
-                document.title = flag; // Set the document title to the flag
-                
-                // Create a new script element to execute the alert
-                const script = document.createElement('script');
-                script.textContent = `alert('${flag}');`; // Set the alert content
-                document.body.appendChild(script); // Append the script to the body to execute it
-            } else {
-                li.innerHTML = message; // Directly inserting user input into the page (vulnerable to XSS)
-            }
-
+            li.innerHTML = message; // Directly inserting user input into the page (vulnerable to XSS)
             document.getElementById('messages').appendChild(li); // Append the list item to the messages list
 
             // Clear the input field
