@@ -33,7 +33,7 @@ func main()
 		// Query the flags table with the user-provided flag_id
         
 		// This is vulnerable to SQL injection attacks
-		query := fmt.Sprintf("SELECT * FROM flags WHERE id = '%s'", flagID)
+		query := fmt.Sprintf("SELECT * FROM employees WHERE id = '%s'", flagID)
 		rows, err := db.Query(query)
 		if err != nil {
 			http.Error(w, "Failed to query database", http.StatusInternalServerError)
