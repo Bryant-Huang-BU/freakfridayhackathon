@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halloween Spooktacular</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to the Haunted House</h1>
+        <p>Beware as you step in... the spirits are restless tonight.</p>
+    </header>
+
+    <section id="main-content">
+        <h2>The Legend of the Headless Horseman</h2>
+        <p>Every Halloween night, a headless rider roams these lands. Have you seen him yet? His search for his missing head never ends...</p>
+
+        <h2>Spooky Fun Facts</h2>
+        <ul>
+            <li>Did you know that black cats were once believed to be witches' familiars?</li>
+            <li>Halloween originated from the ancient Celtic festival of Samhain.</li>
+            <li>The first Jack-o'-lanterns were actually made from turnips.</li>
+        </ul>
+    </section>
+    <section id="comments">
+        <h2>Leave Your Frightful Comments Below!</h2>
+        <form id="commentForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Your spooky name..." required><br>
+
+            <label for="comment">Comment:</label><br>
+            <textarea id="comment" name="comment" rows="4" placeholder="Write something spooky..." required></textarea><br>
+
+            <button type="submit">Submit Comment</button>
+        </form>
+        
+        <div id="commentSection">
+            <h3>What Others Are Saying...</h3>
+            <ul id="commentList">
+                <!-- Comments will appear here -->
+            </ul>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Spooky Web Creations | Enter if you dare!</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
