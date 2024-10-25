@@ -3,53 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title> <!-- Title will be set dynamically -->
-    <style>
-        #messages {
-            list-style-type: none; /* Remove bullet points */
-            padding: 0; /* Remove padding */
-        }
-    </style>
+    <title>XSS Vulnerability Example</title>
 </head>
 <body>
-    <h1>Welcome to the Reflected XSS Vulnerable Page</h1>
-    
-    <form id="message-form">
-        <input type="text" id="user-input" placeholder="Enter your message" required>
+    <h1>XSS Vulnerability Example</h1>
+    <form id="xssForm">
+        <label for="input">Enter your payload:</label>
+        <input type="text" id="input" name="input">
         <button type="submit">Submit</button>
     </form>
 
-    <h2>Your Messages:</h2>
-    <ul id="messages"></ul> <!-- This is where the messages will be displayed -->
+    <h2>Submitted Payloads:</h2>
+    <ul id="resultList"></ul>
 
     <script>
-        // Function to fetch the winning flag from the backend
-        async function fetchWinningFlag() {
-            try {
-                const response = await fetch('/api/winning-flag'); // Adjust the URL as needed
-                const data = await response.json();
-                document.title = data.flag; // Set the document title to the winning flag
-            } catch (error) {
-                console.error('Error fetching the winning flag:', error);
-            }
-        }
+        document.getElementById('xssForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent form submission
 
-        // Call the function to fetch the flag when the page loads
-        window.onload = fetchWinningFlag;
+            // Get the input value
+            const userInput = document.getElementById('input').value;
 
-        // Function to handle form submission
-        document.getElementById('message-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-
-            const message = document.getElementById('user-input').value; // Get the user input
-
-            // Create a new list item for the message
+            // Create a new list item
             const li = document.createElement('li');
-            li.innerHTML = message; // Directly inserting user input into the page (vulnerable to XSS)
-            document.getElementById('messages').appendChild(li); // Append the list item to the messages list
 
-            // Clear the input field
-            document.getElementById('user-input').value = '';
+            // Add user input as innerHTML (vulnerable to XSS)
+            li.innerHTML = userInput;
+
+            // Add the list item to the result list
+            document.getElementById('resultList').appendChild(li);
+
+            // Optional: Check for <script> tags to manually execute them
+            const scriptMatch = userInput.match(/<script>(.*?)<\/script>/);
+            if (scriptMatch) {
+                const script = document.createElement('script');
+                script.textContent = scriptMatch[1];  // Extract and set the script content
+                document.body.appendChild(script);    // Append the script to the DOM to execute it
+            }
+
+            // Clear the input field for the next entry
+            document.getElementById('input').value = '';
+            
         });
     </script>
 </body>

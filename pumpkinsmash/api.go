@@ -12,7 +12,7 @@ import (
 
 func main() 
 	// Create a new HTTP server
-	http.HandleFunc"/", func(w http.ResponseWriter, r *http.Request) 
+	http.HandleFunc"/currflag", func(w http.ResponseWriter, r *http.Request) 
 		// Check if the request is a GET request
 		if r.Method != "GET" {
 			http.Error(w, "Invalid request method", http.StatusBadRequest)
