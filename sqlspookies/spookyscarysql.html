@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Flavors&family=Henny+Penny&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spooky Scary SQL</title>
+    <style>
+        body {
+            background-color: black;
+            color: orange;
+            font-family: 'Henny Penny'; font-size: 22px;
+            text-align: center;
+            padding: 50px;
+        }
+        input, button {
+            font-size: 1.2em;
+            padding: 10px;
+            margin: 10px;
+        }
+        .response {
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Spooky Scary SQL</h1>
+    <p>Enter your spooky query below:</p>
+    <input type="text" id="queryInput" placeholder="Enter your query...">
+    <button onclick="sendQuery()">Send Query</button>
+    <div class="response" id="response"></div>
+
+    <script>
+        async function sendQuery() {
+            const query = document.getElementById('queryInput').value;
+            const responseDiv = document.getElementById('response');
+            try {
+                const response = await fetch(`http://localhost:4000/query?flag=${encodeURIComponent(query)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.text();
+                responseDiv.innerText = data; 
+            } catch (error) {
+                responseDiv.innerText = 'Error: ' + error.message + ' Please contact support.';
+            }
+        }
+    </script>
+</body>
+</html>

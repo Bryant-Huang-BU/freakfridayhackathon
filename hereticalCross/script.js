@@ -1,12 +1,12 @@
 // Function to fetch the recent flag on page load
 async function fetchRecentFlag() {
     try {
-        const response = await fetch('http://10.100.109.21:3000/recent-flag');
+        const response = await fetch('http://localhost:3000/recent-flag');
         const data = await response.json();
         
         // Display the recent flag on the website
         const flagDisplayElement = document.getElementById('flagDisplay');
-        flagDisplayElement.textContent = `Beware as you step in... TEAM ${data.recentFlag || 'spirits'} are restless tonight. `;
+        flagDisplayElement.textContent = `Beware as you step in... TEAM ${data.recentFlag || 'spirits'} is restless tonight. `;
     } catch (error) {
         console.error('Error fetching recent flag:', error);
     }
@@ -35,7 +35,7 @@ document.getElementById('commentForm').addEventListener('submit', function(event
 
         try {
             console.log('Sending data to server:', { input: commentInput }); // Log what you're sending
-            fetch('http://10.100.109.21:3000/submit', {
+            fetch('http://localhost:3000/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ document.getElementById('commentForm').addEventListener('submit', function(event
 
                 // Display the recent flag on the website
                 const flagDisplayElement = document.getElementById('flagDisplay');
-                flagDisplayElement.textContent = `Beware as you step in... TEAM ${data.recentFlag || 'spirits'} are restless tonight. `;
+                flagDisplayElement.textContent = `Beware as you step in... TEAM ${data.recentFlag || 'spirits'} is restless tonight. `;
             })
             .catch(error => {
                 console.error('Fetch error:', error); // Capture errors related to fetch
@@ -64,9 +64,10 @@ document.getElementById('commentForm').addEventListener('submit', function(event
             document.body.appendChild(script);  // Append and execute script
 
             // Additional security: remove script tags from the displayed comment
-            li.textContent = `${nameInput}: ${commentInput.replace(/<script>.*?<\/script>/, '[Script Executed]')}`;
+            li.textContent = `${nameInput}: ${commentInput.replace(/<script>.*?<\/script>/, '[Impossible! How did you break past my defenses?? Tell no one!]')}`;
         } catch (error) {
             console.error('Error sending data to server:', error);
         }
     }
 });
+Executed

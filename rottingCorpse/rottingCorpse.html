@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotting Corpse Halloween Hackathon</title>
+    <style>
+        body {
+            background-color: black;
+            color: orange;
+            font-family: 'Creepster', cursive;
+            text-align: center;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .winning-team {
+            margin-top: 30px;
+            font-size: 24px;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Flavors&family=Henny+Penny&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Rotting Corpse Halloween Hackathon</h1>
+        <div class="input-group">
+            <input type="text" id="userInput" placeholder="Enter your spooky input">
+            <button onclick="queryBackend()">Submit</button>
+        </div>
+        <div id="output"></div>
+        <div class="winning-team" id="winningTeam">Loading winning team...</div>
+    </div>
+
+    <script>
+        async function queryBackend() {
+            const userInput = document.getElementById('userInput').value;
+            const response = await fetch('localhost:4000/rottingCorpse?input=' + encodeURIComponent(userInput), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+            });
+            const data = await response.json();
+            document.getElementById('output').innerText = data.output;
+        }
+
+        async function fetchWinningTeam() {
+            const response = await fetch('http://localhost:4000/winningteam');
+            const data = await response.json();
+            document.getElementById('winningTeam').innerText = `Winning Team: ${data.team}`;
+        }
+
+        // Fetch the winning team every 5 seconds
+        setInterval(fetchWinningTeam, 5000);
+        fetchWinningTeam(); // Initial fetch
+    </script>
+</body>
+</html></html>
