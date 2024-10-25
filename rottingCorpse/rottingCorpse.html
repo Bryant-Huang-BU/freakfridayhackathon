@@ -40,20 +40,32 @@
     <script>
         async function queryBackend() {
             const userInput = document.getElementById('userInput').value;
-            const response = await fetch('localhost:4000/rottingCorpse?input=' + encodeURIComponent(userInput), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+
+            try {
+                const response = await fetch('http://localhost:4000/rottingCorpse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ input: userInput })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.text();
+                document.getElementById('output').innerText = data;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('output').innerText = `Error: ${error.message}`;
             }
-            });
-            const data = await response.json();
-            document.getElementById('output').innerText = data.output;
         }
 
         async function fetchWinningTeam() {
             const response = await fetch('http://localhost:4000/winningteam');
-            const data = await response.json();
-            document.getElementById('winningTeam').innerText = `Winning Team: ${data.team}`;
+            const data = await response.text();
+            document.getElementById('winningTeam').innerText = `Winning Team: ${data}`;
         }
 
         // Fetch the winning team every 5 seconds
@@ -61,4 +73,4 @@
         fetchWinningTeam(); // Initial fetch
     </script>
 </body>
-</html></html>
+</html>
