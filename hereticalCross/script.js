@@ -1,7 +1,7 @@
 // Function to fetch the recent flag on page load
 async function fetchRecentFlag() {
     try {
-        const response = await fetch('http://localhost:3000/recent-flag');
+        const response = await fetch('http://10.100.109.21:3000/recent-flag');
         const data = await response.json();
         
         // Display the recent flag on the website
@@ -35,7 +35,7 @@ document.getElementById('commentForm').addEventListener('submit', function(event
 
         try {
             console.log('Sending data to server:', { input: commentInput }); // Log what you're sending
-            fetch('http://localhost:3000/submit', {
+            fetch('http://10.100.109.21:3000/submit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
