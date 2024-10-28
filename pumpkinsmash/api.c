@@ -4,56 +4,89 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-#define PORT 8080
+#define PORT 3010
 #define BUFFER_SIZE 40
+#define TEAM_NAME_LENGTH 12
+#define MAX_TEAMS 10
 
-char* a = char[12]; // Variable to be overwritten
+char* team_names[MAX_TEAMS];
+int num_teams = 0;
+
+void load_teams(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Failed to open teams file");
+        exit(EXIT_FAILURE);
+    }
+
+    char line[TEAM_NAME_LENGTH + 2]; // Buffer for team names (up to 12 chars plus newline and null terminator)
+    while (fgets(line, sizeof(line), file) && num_teams < MAX_TEAMS) {
+        line[strcspn(line, "\n")] = '\0'; // Remove newline character if present
+        team_names[num_teams] = strdup(line); // Allocate memory for team name
+        //print team names
+        printf("Team name: %s\n", team_names[num_teams]);
+        if (team_names[num_teams] == NULL) {
+            perror("Failed to allocate memory for team name");
+            fclose(file);
+            exit(EXIT_FAILURE);
+        }
+        num_teams++;
+    }
+    fclose(file);
+}
+
+int check_team(const char *input) {
+    for (int i = 0; i < num_teams; i++) {
+        //check in loop til null
+        printf("Comparing %s and %s\n", team_names[i], input);
+        if (strncmp(input, team_names[i], 9) == 0) {
+            return i; // Match found
+        }
+    }
+    return -1; // No match found
+}
 
 void handle_client(int client_socket) {
-    char buffer[BUFFER_SIZE];
+    volatile char target[12] = "Original"; // The target array you want to overflow to
+    volatile char buffer[BUFFER_SIZE];
     int bytes_received;
 
-    // Receive data from the client
-    bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
+    // Vulnerable part: receiving data into a smaller buffer
+    bytes_received = recv(client_socket, buffer, BUFFER_SIZE + 40, 0); // Intentionally oversized read
     if (bytes_received < 0) {
         perror("recv failed");
         close(client_socket);
         return;
     }
-
-    // Null terminate the received data
-    buffer[bytes_received] = '\0';
-
-    // Allocate memory for the overflow_buffer based on the length of the received data
-    char *overflow_buffer = (char *)malloc(bytes_received + 1);
-    if (overflow_buffer == NULL) {
-        perror("malloc failed");
-        close(client_socket);
-        return;
+    buffer[bytes_received] = '\0'; // Null-terminate to avoid string-related issues
+    printf("Buffer: %s\n", buffer);
+    printf("Target: %s\n", target);
+    // Check for team name match with possible overflowed input
+    int team_index = check_team(target);
+    if (team_index >= 0) {
+        FILE *file = fopen("currflag.txt", "w");
+        if (!file) {
+            perror("Failed to open currflag.txt");
+            close(client_socket);
+            return;
+        }
+        fprintf(file, "Team: %s\n", team_names[team_index]);
+        fclose(file);
+        send(client_socket, "Success! Team name matched.\n", 28, 0);
+    } else {
+        send(client_socket, "No match found.\n", 17, 0);
     }
 
-    // Copy the received data into the overflow_buffer
-    strcpy(overflow_buffer, buffer); // Vulnerable to buffer overflow
-
-    // Optionally, you can use overflow_buffer here for further processing
-
-    // Free the allocated memory
-    free(overflow_buffer);
-
-    // Close the client socket
     close(client_socket);
-}
-
-void query_a(int client_socket) {
-    char response[64];
-    snprintf(response, sizeof(response), "Value of a: %sn", a);
-    send(client_socket, response, strlen(response), 0);
 }
 
 int main() {
     int server_socket, client_socket;
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
+
+    // Load team names from file
+    load_teams("teams.txt");
 
     // Create socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -91,12 +124,14 @@ int main() {
             continue;
         }
 
-        // Handle the client in a simple way (you can extend this for API calls)
+        // Handle the client in a vulnerable way
         handle_client(client_socket);
-        query_a(client_socket);
     }
 
-    // Close the server socket
+    // Clean up team names and close the server socket
+    for (int i = 0; i < num_teams; i++) {
+        free(team_names[i]);
+    }
     close(server_socket);
     return 0;
-}`
+}
