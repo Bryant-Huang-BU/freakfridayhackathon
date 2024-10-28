@@ -50,7 +50,7 @@ void handle_client(int client_socket) {
     volatile char target[12] = "Original"; // The target array you want to overflow to
     volatile char buffer[BUFFER_SIZE];
     int bytes_received;
-
+    send(client_socket, "Alright, let\'s crack into the \'Stack of Terror\'… You\'re up first, 40 in the chamber, team in the overflow. What\'s your move?\n", strlen("Alright, let\'s crack into the \'Stack of Terror\'… You\'re up first, 40 in the chamber, team in the overflow. What\'s your move?\n"), 0);
     // Vulnerable part: receiving data into a smaller buffer
     bytes_received = recv(client_socket, buffer, BUFFER_SIZE + 40, 0); // Intentionally oversized read
     if (bytes_received < 0) {
@@ -72,9 +72,9 @@ void handle_client(int client_socket) {
         }
         fprintf(file, "Team: %s\n", team_names[team_index]);
         fclose(file);
-        send(client_socket, "Success! Team name matched.\n", 28, 0);
+        send(client_socket,"You dare disturb the stack of spirits?! Well, I’ll counter with 'Pumpkin Pulverize' and… SMASH that stack completely!\n", strlen("You dare disturb the stack of spirits?! Well, I’ll counter with 'Pumpkin Pulverize' and… SMASH that stack completely!\n"), 0);
     } else {
-        send(client_socket, "No match found.\n", 17, 0);
+        send(client_socket, "Looks like your spells have drifted into the night. Better luck next haunting!\n", strlen("Looks like your spells have drifted into the night. Better luck next haunting!\n"), 0);
     }
 
     close(client_socket);
