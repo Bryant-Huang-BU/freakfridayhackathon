@@ -34,11 +34,26 @@ void load_teams(const char *filename) {
     }
     fclose(file);
 }
+void trim_whitespace(char *str) {
+    char *end;
+
+    // Trim leading space
+    while (isspace((unsigned char)*str) || *str == '\n') str++;
+
+    if (*str == 0)  // All spaces?
+        return;
+
+    // Trim trailing space and newline
+    end = str + strlen(str) - 1;
+    while (end > str && (isspace((unsigned char)*end) || *end == '\n')) end--;
+
+    end[1] = '\0'; // Null terminate
+}
 
 int check_team(const char *input) {
     for (int i = 0; i < num_teams; i++) {
         //check in loop til null
-        //printf("Comparing %s and %s\n", team_names[i], input);
+        printf("Comparing %s and %saaaa\n", team_names[i], input);
         //int len = strlen(input) - 1;
         //printf("%d\n", len);
         if ( strcmp(input, team_names[i]) == 0) {
@@ -65,6 +80,7 @@ void handle_client(int client_socket) {
     printf("Buffer: %s\n", buffer);
     printf("Target: %s\n", target);
     // Check for team name match with possible overflowed input
+    trim_whitespace(buffer);
     int team_index = check_team(target);
     if (team_index >= 0) {
         FILE *file = fopen("currflag.txt", "w");
