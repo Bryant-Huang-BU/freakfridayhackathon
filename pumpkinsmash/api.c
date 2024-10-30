@@ -39,7 +39,9 @@ int check_team(const char *input) {
     for (int i = 0; i < num_teams; i++) {
         //check in loop til null
         printf("Comparing %s and %s\n", team_names[i], input);
-        if (strncmp(input, team_names[i], 9) == 0) {
+        int len = strlen(input) - 1;
+        printf("%d\n", len);
+        if (strncmp(input, team_names[i], len) == 0) {
             return i; // Match found
         }
     }
@@ -47,10 +49,10 @@ int check_team(const char *input) {
 }
 
 void handle_client(int client_socket) {
-    volatile char target[12] = "Original"; // The target array you want to overflow to
+    volatile char target[12] = "NOTHING"; // The target array you want to overflow to
     volatile char buffer[BUFFER_SIZE];
     int bytes_received;
-    send(client_socket, "Alright, let\'s crack into the \'Stack of Terror\'… You\'re up first, 40 in the chamber, team in the overflow. What\'s your move?\n", strlen("Alright, let\'s crack into the \'Stack of Terror\'… You\'re up first, 40 in the chamber, team in the overflow. What\'s your move?\n"), 0);
+    send(client_socket, "Alright, let\'s crack into the \'Stack of Terror\'… You\'re up first, 52 in the chamber, team in the overflow. What\'s your move?\n", strlen("Alright, let\'s crack into the \'Stack of Terror\'… You\'re up first, 40 in the chamber, team in the overflow. What\'s your move?\n"), 0);
     // Vulnerable part: receiving data into a smaller buffer
     bytes_received = recv(client_socket, buffer, BUFFER_SIZE + 40, 0); // Intentionally oversized read
     if (bytes_received < 0) {
@@ -74,7 +76,13 @@ void handle_client(int client_socket) {
         fclose(file);
         send(client_socket,"You dare disturb the stack of spirits?! Well, I’ll counter with 'Pumpkin Pulverize' and… SMASH that stack completely!\n", strlen("You dare disturb the stack of spirits?! Well, I’ll counter with 'Pumpkin Pulverize' and… SMASH that stack completely!\n"), 0);
     } else {
-        send(client_socket, "Looks like your spells have drifted into the night. Better luck next haunting!\n", strlen("Looks like your spells have drifted into the night. Better luck next haunting!\n"), 0);
+        char bufr[256]; // Adjust the size if necessary
+
+    // Format the string into the buffer
+        snprintf(bufr, sizeof(bufr), "Looks like your spells have drifted into the night. Better luck next haunting!\n Imagine being TEAM %s", target);
+        //printf("has been wokrin");
+        // No match found, so send out message and value of target
+        send(client_socket, bufr , strlen(bufr), 0);
     }
 
     close(client_socket);
