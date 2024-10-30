@@ -38,10 +38,11 @@ void load_teams(const char *filename) {
 int check_team(const char *input) {
     for (int i = 0; i < num_teams; i++) {
         //check in loop til null
-        printf("Comparing %s and %s\n", team_names[i], input);
-        int len = strlen(input) - 1;
-        printf("%d\n", len);
-        if (strncmp(input, team_names[i], len) == 0) {
+        //printf("Comparing %s and %s\n", team_names[i], input);
+        //int len = strlen(input) - 1;
+        //printf("%d\n", len);
+        if ( strcmp(input, team_names[i]) == 0) {
+            printf("Match found %s AND %s\n", team_names[i], input);
             return i; // Match found
         }
     }
