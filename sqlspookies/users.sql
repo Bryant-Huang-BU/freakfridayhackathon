@@ -1,5 +1,5 @@
 --make an sql table called users that contains a list of users with auto incrementing ids
-CREATE TABLE users (
+CREATE TABLE scaryskeletons (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );

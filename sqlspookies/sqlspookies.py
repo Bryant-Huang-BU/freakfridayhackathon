@@ -9,8 +9,8 @@ CORS(app)
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'yourpassword',
-    'database': 'users',
+    'password': 'cybears',
+    'database': 'spooky',
     'client_flag': pymysql.constants.CLIENT.MULTI_STATEMENTS
 }
 
@@ -27,7 +27,7 @@ def run_query(subject):
             #subject = "'; SELECT * FROM users; -- "
             print("Executing query with injection attempt:", subject)  # Log the injection input
             
-            query = f"SELECT * FROM users WHERE name = '{subject} '"
+            query = f"SELECT * FROM scaryskeleton WHERE name = '{subject} '"
             print("Final query executed:", query)
             
             cursor.execute(query)

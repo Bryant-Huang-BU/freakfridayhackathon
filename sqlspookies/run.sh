@@ -4,5 +4,5 @@
 service mysql start
 
 # Create the users table and populate it
-mysql -u root -e "CREATE DATABASE users"
+mysql -u root -e "CREATE DATABASE spooky"
 mysql -u root users < ./users.sql
